@@ -45,6 +45,7 @@ public class BangBangController implements UltrasonicController {
     WallFollowingLab.rightMotor.forward();
     this.status = NO_TURN;
     
+    //for loop checking the values of the previous vals array
     for (int i = 0; i < previousVals.length; i++){
       previousVals[i] = 0;
     }
@@ -58,7 +59,7 @@ public class BangBangController implements UltrasonicController {
     
     if ((distance >= FILTER_DISTANCE && this.filterCount < FILTER_COUNT) || distance < 0 ){
       this.filterCount++;
-    } else if (distance > 0 || distance >= FILTER_DISTANCE){
+    } else if (distance > 0 || distance >= FILTER_DISTANCE){ //resets sensor distance depending on which case is true 
       this.filterCount = 0;
       actualDistance = (float)(getAverageDist(distance));
     } 
@@ -67,9 +68,11 @@ public class BangBangController implements UltrasonicController {
     return;
   }
   
+  //calculates the error the robot needs to correct
   final int error = (int) actualDistance - bandCenter;
   
-  /*if (status.equals(RIGHT_TURN)){
+  
+    if (status.equals(RIGHT_TURN)){
     if (actualDistance < 15){
       setStatus(FAST_RIGHT_TURN);
       fastRightTurn();
@@ -79,27 +82,38 @@ public class BangBangController implements UltrasonicController {
       rightTurn();
       return;
     }
-  }*/
+  }
   
+  //Reverses if the distance is less than 7 
   if (actualDistance < 7) {
     setStatus(GO_BACK);
     goBackwards();
     return;
   }
   
-  //If this occurs then the robot is at the correct distance form the wall and no changes need to be made
+  //If this occurs then the robot is at the correct distance from the wall and no changes need to be made
   if(bandwidth > Math.abs(error)){
     setStatus(NO_TURN);
     setFast();
-  } else if(error >= 15){
-    setStatus(FAST_LEFT_TURN);
-    fastLeftTurn();
-  } else if( error > 0 && error < 30){
+    
+  } //else if(error >= 15){ // if the robot is too far from the wall and need urgent re-adjustment
+    //setStatus(FAST_LEFT_TURN);
+    //fastLeftTurn();
+  //}
+  else if( error > 0 ){ //if error is too far from the way, needs to turn left 
     setStatus(LEFT_TURN);
     leftTurn();
-  } else if (error < 0){
+    if(bandwidth > Math.abs(error)){
+      setStatus(NO_TURN);
+      setFast();
+    }
+  } else if (error < 0){ //if robot is too close to the wall 
     setStatus(RIGHT_TURN);
     rightTurn();
+    if(bandwidth > Math.abs(error)){
+      setStatus(NO_TURN);
+      setFast();
+    }
   }
 }
 
@@ -109,7 +123,7 @@ public class BangBangController implements UltrasonicController {
     return this.distance;
   }
 
-
+//method to compute the average to use in resetting the filter distance
 public int getAverageDist(int dist){
   int j = 0;
   int sum = 0; 
@@ -133,6 +147,7 @@ public int getAverageDist(int dist){
   return Math.min(250, Math.abs(average));
 }
 
+//sets status provided in the parameter
 private void setStatus(String stat){
   status = stat;
 }
@@ -150,7 +165,7 @@ private void leftTurn(){
 }
 
 private void fastLeftTurn(){
-  WallFollowingLab.rightMotor.setSpeed(motorHigh + 100); // Start robot moving forward
+  WallFollowingLab.rightMotor.setSpeed(motorHigh + 200); // Start robot moving forward
   WallFollowingLab.leftMotor.setSpeed(motorLow);
   WallFollowingLab.rightMotor.forward();
   WallFollowingLab.leftMotor.forward();
@@ -166,7 +181,7 @@ private void rightTurn(){
 
 private void fastRightTurn(){
   WallFollowingLab.rightMotor.setSpeed(motorLow); // Start robot moving forward
-  WallFollowingLab.leftMotor.setSpeed(motorHigh + 100);
+  WallFollowingLab.leftMotor.setSpeed(motorHigh + 200);
   WallFollowingLab.rightMotor.forward();
   WallFollowingLab.leftMotor.forward();
   
