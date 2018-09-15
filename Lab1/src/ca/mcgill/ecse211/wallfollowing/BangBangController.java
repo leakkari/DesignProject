@@ -53,14 +53,14 @@ public class BangBangController implements UltrasonicController {
 
   @Override
   public void processUSData(int distance) {
-    //distance /= 1.3f;
+    distance /= 1.3f;
     this.distance = distance;
     // TODO: process a movement based on the us distance passed in (BANG-BANG style)
     
  
   
   //calculates the error the robot needs to correct
-  final int error = (int) 28 - distance;
+  final int error = (int) 33 - distance;
   
   
   
@@ -113,8 +113,8 @@ public String getStatus(){
 }
 
 private void leftTurn(){
-  WallFollowingLab.rightMotor.setSpeed(motorHigh-40); // Start robot moving forward
-  WallFollowingLab.leftMotor.setSpeed(motorLow - 60);
+  WallFollowingLab.rightMotor.setSpeed(motorHigh-55); // Start robot moving forward
+  WallFollowingLab.leftMotor.setSpeed(motorLow);
   WallFollowingLab.rightMotor.forward();
   WallFollowingLab.leftMotor.forward();
 }
