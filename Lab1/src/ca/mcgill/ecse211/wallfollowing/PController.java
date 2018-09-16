@@ -7,7 +7,7 @@ public class PController implements UltrasonicController {
   /* Constants */
   private static final int MOTOR_SPEED = 200;
   private static final int FILTER_OUT = 20;
-  private final int SCALING_FACTOR = 10;
+  private final int SCALING_FACTOR = 2;
   private final int MIN_SPEED = 150;
   private final int MAX_SPEED = 350;
 
@@ -38,17 +38,12 @@ public class PController implements UltrasonicController {
     
     //if robot is too far away from wall
     if (error < -bandWidth){
-      filterControl++;
-      //if too far away from the wall for too long, Beastie turns left 
-      if (filterControl > FILTER_OUT){
-        turnRight(Math.abs(error));
-      }
+      //if too far away from the wall for too long, Beastie turns left  
+        turnLeft(Math.abs(error));
       //if too close to the wall, Beastie turns right 
     } else if(error > bandWidth){
-      filterControl = 0;
-      turnLeft(Math.abs(error));
+      turnRight(Math.abs(error));
     } else { //else Beastsie keeps going straight 
-      filterControl = 0;
       goStraight();
     }
     
@@ -80,16 +75,16 @@ public class PController implements UltrasonicController {
 
   //Turns Beastie left
   public void turnLeft(int error){
-    WallFollowingLab.leftMotor.setSpeed(Math.max(MOTOR_SPEED - (SCALING_FACTOR * error), MIN_SPEED));
-    WallFollowingLab.rightMotor.setSpeed(Math.max(MOTOR_SPEED + (SCALING_FACTOR * error), MAX_SPEED));
+    WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED - (SCALING_FACTOR * error));
+    WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED + (SCALING_FACTOR * error));
     WallFollowingLab.leftMotor.forward();
     WallFollowingLab.rightMotor.forward();
   }
   
   //Turns Beastie right
   public void turnRight(int error){
-    WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED + error);
-    WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED - error);
+    WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED + (SCALING_FACTOR * error));
+    WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED - (SCALING_FACTOR * error));
     WallFollowingLab.leftMotor.forward();
     WallFollowingLab.rightMotor.forward();
   }
@@ -99,7 +94,7 @@ public class PController implements UltrasonicController {
     WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED);
     WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED);
     WallFollowingLab.leftMotor.forward();
-    WallFollowingLab.rightMotor.backward();
+    WallFollowingLab.rightMotor.forward();
   }
   
   
