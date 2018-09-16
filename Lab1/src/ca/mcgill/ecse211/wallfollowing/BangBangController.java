@@ -39,10 +39,10 @@ public class BangBangController implements UltrasonicController {
     this.bandwidth = bandwidth;
     this.motorLow = motorLow;
     this.motorHigh = motorHigh;
-    WallFollowingLab.leftMotor.setSpeed(motorHigh); // Start robot moving forward
+    /*WallFollowingLab.leftMotor.setSpeed(motorHigh); // Start robot moving forward
     WallFollowingLab.rightMotor.setSpeed(motorHigh);
     WallFollowingLab.leftMotor.forward();
-    WallFollowingLab.rightMotor.forward();
+    WallFollowingLab.rightMotor.forward();*/
     this.status = NO_TURN;
     
     //for loop checking the values of the previous vals array
@@ -76,14 +76,15 @@ public class BangBangController implements UltrasonicController {
     setStatus(NO_TURN);
     setFast(); 
   } 
-  else if( error > 0 ){ //if error is too far from the way, needs to turn left 
-    setStatus(LEFT_TURN);
+  else if( error > 0 ){ //if error is too far from the way, needs to turn right 
+    setStatus(RIGHT_TURN);
     rightTurn();
     
    
-  } else if (error < 0){ //if robot is too close to the wall 
-    setStatus(RIGHT_TURN);
-    leftTurn();}
+  } else if (error < 0){ //if robot is too close to the wall turn left 
+    setStatus(LEFT_TURN);
+    leftTurn();
+    }
   
   /*} else if(error>0 && distance<7) {
 	  fastLeftTurn();
