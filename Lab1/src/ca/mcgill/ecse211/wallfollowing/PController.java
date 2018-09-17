@@ -34,15 +34,29 @@ public class PController implements UltrasonicController {
     this.distance = distance;
     
     //caluclates error 
-    this.error = (bandCenter - this.distance);
+    error = (30 - distance);
     
+    
+
+    if (Math.abs(error) <= bandWidth ) {// Within limits, same speed 
+	   	WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED);// Start moving forward 
+	   	WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED); 
+	   	WallFollowingLab.leftMotor.forward(); 
+	   	WallFollowingLab.rightMotor.forward();
+   	}
     //if robot is too far away from wall
-    if (error < -bandWidth){
-      //if too far away from the wall for too long, Beastie turns left  
+    else if (error < 0){
+      //if too far away from the wall for too long, Beastie turns left 
         turnLeft(Math.abs(error));
       //if too close to the wall, Beastie turns right 
-    } else if(error > bandWidth){
+    } else if(error > 0){
       turnRight(Math.abs(error));
+      if(distance>2000) {
+      WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED); // Start robot moving forward
+      WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED);
+      WallFollowingLab.rightMotor.backward();
+      WallFollowingLab.leftMotor.backward();
+      }
     } else { //else Beastsie keeps going straight 
       goStraight();
     }
@@ -75,24 +89,24 @@ public class PController implements UltrasonicController {
 
   //Turns Beastie left
   public void turnLeft(int error){
-    WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED - (SCALING_FACTOR * error));
-    WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED + (SCALING_FACTOR * error));
+    WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED - Math.abs(SCALING_FACTOR * error)+10);
+    WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED + Math.abs(SCALING_FACTOR * error)-70);
     WallFollowingLab.leftMotor.forward();
     WallFollowingLab.rightMotor.forward();
   }
   
   //Turns Beastie right
   public void turnRight(int error){
-    WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED + (SCALING_FACTOR * error));
-    WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED - (SCALING_FACTOR * error));
+    WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED + Math.abs(SCALING_FACTOR * error) -10);
+    WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED - Math.abs(SCALING_FACTOR * error) -55);
     WallFollowingLab.leftMotor.forward();
     WallFollowingLab.rightMotor.forward();
   }
   
   //Keeps Beastie going straight
   public void goStraight(){
-    WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED);
-    WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED);
+    WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED-20);
+    WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED-20);
     WallFollowingLab.leftMotor.forward();
     WallFollowingLab.rightMotor.forward();
   }

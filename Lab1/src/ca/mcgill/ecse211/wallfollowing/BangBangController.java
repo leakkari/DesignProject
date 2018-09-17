@@ -60,7 +60,7 @@ public class BangBangController implements UltrasonicController {
  
   
   //calculates the error the robot needs to correct
-  final int error = (int) 33 - distance;
+  final int error = (int) 30 - distance; //33
   
   
   
@@ -114,7 +114,7 @@ public String getStatus(){
 }
 
 private void leftTurn(){
-  WallFollowingLab.rightMotor.setSpeed(motorHigh-55); // Start robot moving forward
+  WallFollowingLab.rightMotor.setSpeed(motorHigh-35); // Start robot moving forward
   WallFollowingLab.leftMotor.setSpeed(motorLow);
   WallFollowingLab.rightMotor.forward();
   WallFollowingLab.leftMotor.forward();
@@ -129,7 +129,7 @@ private void leftTurn(){
 
 private void rightTurn(){
   WallFollowingLab.rightMotor.setSpeed(motorLow - 55); // Start robot moving forward
-  WallFollowingLab.leftMotor.setSpeed(motorHigh-40);
+  WallFollowingLab.leftMotor.setSpeed(motorHigh-20);
   WallFollowingLab.rightMotor.forward();
   WallFollowingLab.leftMotor.forward();
   
@@ -151,8 +151,8 @@ private void goBackwards(){
 }
 
 private void setFast(){
-  WallFollowingLab.leftMotor.setSpeed(motorLow+5);
-  WallFollowingLab.rightMotor.setSpeed(motorLow+5); // Start robot moving forward
+  WallFollowingLab.leftMotor.setSpeed(motorLow+25);
+  WallFollowingLab.rightMotor.setSpeed(motorLow+25); // Start robot moving forward
   WallFollowingLab.leftMotor.forward();
   WallFollowingLab.rightMotor.forward();
   
