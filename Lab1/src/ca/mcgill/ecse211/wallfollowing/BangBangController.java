@@ -1,6 +1,11 @@
 package ca.mcgill.ecse211.wallfollowing;
 
 import lejos.hardware.motor.*;
+/**
+ * This class implemets the Bang Bang controller for Lab1 on the EV3 platform.
+ * @author leaakkari
+ *
+ */
 
 public class BangBangController implements UltrasonicController {
 
@@ -27,9 +32,7 @@ public class BangBangController implements UltrasonicController {
   
   private String status;
   
-  //private int filterCount = 0;
-  
-  //float actualDistance = 0;
+ 
   
   int walldistance = 20;
 
@@ -39,37 +42,26 @@ public class BangBangController implements UltrasonicController {
     this.bandwidth = bandwidth;
     this.motorLow = motorLow;
     this.motorHigh = motorHigh;
-    /*WallFollowingLab.leftMotor.setSpeed(motorHigh); // Start robot moving forward
-    WallFollowingLab.rightMotor.setSpeed(motorHigh);
-    WallFollowingLab.leftMotor.forward();
-    WallFollowingLab.rightMotor.forward();*/
+   
     this.status = NO_TURN;
     
-    //for loop checking the values of the previous vals array
-   /* for (int i = 0; i < previousVals.length; i++){
-      previousVals[i] = 0;
-    }*/
+    
   }
 
+  /**
+   * This Method implements the error and controls the robot speed and movements.
+   * 
+   */
   @Override
   public void processUSData(int distance) {
     distance /= 1.3f;
     this.distance = distance;
-    // TODO: process a movement based on the us distance passed in (BANG-BANG style)
-    
- 
+
   
   //calculates the error the robot needs to correct
+    //bandcenyer here is 30.
   final int error = (int) 30 - distance; //33
   
-  
-  
-  //Reverses if the distance is less than 7 
-  /*if (distance < 25) {
-    setStatus(GO_BACK);
-    goBackwards();
-    return;
-  }*/
   
   //If this occurs then the robot is at the correct distance from the wall and no changes need to be made
   if(bandwidth >= Math.abs(error)){
@@ -85,15 +77,7 @@ public class BangBangController implements UltrasonicController {
     setStatus(LEFT_TURN);
     leftTurn();
     }
-  
-  /*} else if(error>0 && distance<7) {
-	  fastLeftTurn();
-	 
-  
-  } else if(error<0 && distance<7) {
-	  fastRightTurn();
-	  
-  }*/
+
 }
 
 
@@ -113,6 +97,9 @@ public String getStatus(){
   return status;
 }
 
+/**
+ * This Method implements a left turn
+ */
 private void leftTurn(){
   WallFollowingLab.rightMotor.setSpeed(motorHigh-35); // Start robot moving forward
   WallFollowingLab.leftMotor.setSpeed(motorLow);
@@ -120,13 +107,9 @@ private void leftTurn(){
   WallFollowingLab.leftMotor.forward();
 }
 
-/*private void fastLeftTurn(){
-  WallFollowingLab.rightMotor.setSpeed(motorHigh + 200); // Start robot moving forward
-  WallFollowingLab.leftMotor.setSpeed(motorLow - 5);
-  WallFollowingLab.rightMotor.forward();
-  WallFollowingLab.leftMotor.forward();
-}*/
-
+/**
+ * This method implements a right turn
+ */
 private void rightTurn(){
   WallFollowingLab.rightMotor.setSpeed(motorLow - 55); // Start robot moving forward
   WallFollowingLab.leftMotor.setSpeed(motorHigh-20);
@@ -135,14 +118,9 @@ private void rightTurn(){
   
 }
 
-/*private void fastRightTurn(){
-  WallFollowingLab.rightMotor.setSpeed(motorLow - 55); // Start robot moving forward
-  WallFollowingLab.leftMotor.setSpeed(motorHigh + 200);
-  WallFollowingLab.rightMotor.forward();
-  WallFollowingLab.leftMotor.forward();
-  
-}*/
-
+/**
+ * This method makes the robot go backwards
+ */
 private void goBackwards(){
   WallFollowingLab.rightMotor.setSpeed(motorHigh); // Start robot moving forward
   WallFollowingLab.leftMotor.setSpeed(motorHigh);
@@ -150,6 +128,9 @@ private void goBackwards(){
   WallFollowingLab.leftMotor.backward();
 }
 
+/**
+ * This method makes the robot go forward
+ */
 private void setFast(){
   WallFollowingLab.leftMotor.setSpeed(motorLow+25);
   WallFollowingLab.rightMotor.setSpeed(motorLow+25); // Start robot moving forward

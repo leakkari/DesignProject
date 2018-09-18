@@ -3,7 +3,11 @@ package ca.mcgill.ecse211.wallfollowing;
 import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
-
+/**
+ * This class implements the printer, it updates the LCD screen.
+ * @author leaakkari
+ *
+ */
 public class Printer extends Thread {
 
   //

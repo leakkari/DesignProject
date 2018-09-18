@@ -1,7 +1,12 @@
 package ca.mcgill.ecse211.wallfollowing;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
-
+/**
+ * This class implements the p-type controller for Lab1 on the EV3 platform.
+ * @author leaakkari
+ * 
+ *
+ */
 public class PController implements UltrasonicController {
 
   /* Constants */
@@ -28,16 +33,19 @@ public class PController implements UltrasonicController {
     WallFollowingLab.rightMotor.forward();
     filterControl = 0;
   }
-
+  /**
+   * This method implements the error, the correction, and controls the robot speed
+   */
   @Override
   public void processUSData(int distance) {
     this.distance = distance;
     
-    //caluclates error 
+    //Limiting the distance to 60 to avoid overflow 
     if(distance>60) {
 	    	
 	    distance = 60;
     }
+    	//bandcenter = 25
 	    error = (25 - distance);
 	    
 	    
@@ -50,9 +58,9 @@ public class PController implements UltrasonicController {
 	   	}
 	    //if robot is too far away from wall
 	    else if (error < 0){
-	      //if too far away from the wall for too long, Beastie turns left 
+	      //if too far away from the wall for too long, robot turns left 
 	        turnLeft(Math.abs(error));
-	      //if too close to the wall, Beastie turns right 
+	      //if too close to the wall, robot turns right 
 	    } else if(error > 0){
 	      turnRight(Math.abs(error));
 	      if(distance>2000) {
@@ -61,7 +69,7 @@ public class PController implements UltrasonicController {
 	      WallFollowingLab.rightMotor.backward();
 	      WallFollowingLab.leftMotor.backward();
 	      }
-	    } else { //else Beastsie keeps going straight 
+	    } else { //else Robot keeps going straight 
 	      goStraight();
 	    }
     
@@ -69,10 +77,7 @@ public class PController implements UltrasonicController {
     
     
    
-    // rudimentary filter - toss out invalid samples corresponding to null
-    // signal.
-    // (n.b. this was not included in the Bang-bang controller, but easily
-    // could have).
+   
     //
     if (distance >= 255 && filterControl < FILTER_OUT) {
       // bad value, do not set the distance var, however do increment the
@@ -89,10 +94,13 @@ public class PController implements UltrasonicController {
       this.distance = distance;
     }
 
-    // TODO: process a movement based on the us distance passed in (P style)
+   
   }
 
-  //Turns Beastie left
+  /**
+   * This Method Turns Robot left
+   * @param error
+   */
   public void turnLeft(int error){
     WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED - Math.abs(SCALING_FACTOR * error));
     WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED + Math.abs(SCALING_FACTOR * error)-65);
@@ -100,7 +108,10 @@ public class PController implements UltrasonicController {
     WallFollowingLab.rightMotor.forward();
   }
   
-  //Turns Beastie right
+  /**
+   * This Method Turns Robot right
+   * @param error
+   */
   public void turnRight(int error){
     WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED + Math.abs(SCALING_FACTOR * error+25));
     WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED - Math.abs(SCALING_FACTOR * error) -65);
@@ -108,7 +119,9 @@ public class PController implements UltrasonicController {
     WallFollowingLab.rightMotor.forward();
   }
   
-  //Keeps Beastie going straight
+  /**
+   * This method makes robot go straight
+   */
   public void goStraight(){
     WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED-20);
     WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED-20);

@@ -6,7 +6,11 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.robotics.SampleProvider;
 import lejos.hardware.Button;
-
+/**
+ * This class is the main Wall Following class for Lab1 on the EV3 platform.
+ * @author leaakkari
+ *
+ */
 public class WallFollowingLab {
 
   // Parameters: adjust these for desired performance
