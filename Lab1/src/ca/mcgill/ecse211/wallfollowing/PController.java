@@ -13,8 +13,6 @@ public class PController implements UltrasonicController {
   private static final int MOTOR_SPEED = 200;
   private static final int FILTER_OUT = 20;
   private final int SCALING_FACTOR = 2;
-  private final int MIN_SPEED = 150;
-  private final int MAX_SPEED = 350;
 
   private final int bandCenter;
   private final int bandWidth;
