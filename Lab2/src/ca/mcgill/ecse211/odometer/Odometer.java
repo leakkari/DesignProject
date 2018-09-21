@@ -24,6 +24,8 @@ public class Odometer extends OdometerData implements Runnable {
   private EV3LargeRegulatedMotor rightMotor;
   
   private double X=0, Y=0, Theta = 0;
+  private int lastleftMotorTachoCount;
+  private int lastrightMotorTachoCount;
   
   //distance between wheels
   private final double TRACK;
@@ -107,18 +109,18 @@ public class Odometer extends OdometerData implements Runnable {
     while (true) {
       updateStart = System.currentTimeMillis();
 
-      int nowleftMotorTachoCount = leftMotor.getTachoCount();
-      int nowRightMotorTachoCount = rightMotor.getTachoCount();
+      leftMotorTachoCount = leftMotor.getTachoCount();
+      rightMotorTachoCount = rightMotor.getTachoCount();
 
       // TODO Calculate new robot position based on tachometer counts
    
       
       //compute wheel displacements
-     double distL = Math.PI * WHEEL_RAD *  (nowleftMotorTachoCount - leftMotorTachoCount) / 180;
-     double distR = Math.PI * WHEEL_RAD *  (nowRightMotorTachoCount - rightMotorTachoCount) / 180;
+     double distL = Math.PI * WHEEL_RAD *  (leftMotorTachoCount - lastleftMotorTachoCount) / 180;
+     double distR = Math.PI * WHEEL_RAD *  (rightMotorTachoCount - lastrightMotorTachoCount) / 180;
      
-     leftMotorTachoCount = nowleftMotorTachoCount;
-     rightMotorTachoCount = nowRightMotorTachoCount;
+     lastleftMotorTachoCount = leftMotorTachoCount;
+     lastrightMotorTachoCount = rightMotorTachoCount;
      
      //compute vehicle displacement
      double deltaD = 0.5 * (distL + distR);
