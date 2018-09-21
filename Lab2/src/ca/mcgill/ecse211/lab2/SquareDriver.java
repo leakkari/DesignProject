@@ -43,8 +43,8 @@ public class SquareDriver {
       leftMotor.setSpeed(FORWARD_SPEED);
       rightMotor.setSpeed(FORWARD_SPEED);
 
-      leftMotor.rotate(convertDistance(leftRadius, 2 * TILE_SIZE), true);
-      rightMotor.rotate(convertDistance(rightRadius, 2 * TILE_SIZE), false);
+      leftMotor.rotate(convertDistance(leftRadius, 3 * TILE_SIZE), true);
+      rightMotor.rotate(convertDistance(rightRadius, 3 * TILE_SIZE), false);
 
       // turn 90 degrees clockwise
       leftMotor.setSpeed(ROTATE_SPEED);
