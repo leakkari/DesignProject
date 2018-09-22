@@ -67,20 +67,25 @@ public class OdometryCorrection implements Runnable {
 				//Sound.beep();
 				if((odoData.getXYT()[2] >= 350 && odoData.getXYT()[2] <= 360) || (odoData.getXYT()[2] >= 0.00 && odoData.getXYT()[2] <= 20)){ // case 1: keep increasing y-position until wheels turn 90 degrees
 					odoData.setY(county*size); // robot is horizontally in line with origin
+					odoData.setX(0);
+					odoData.setTheta(0);
 					county++;
 				}
 				else if(odoData.getXYT()[2] >= 78 && odoData.getXYT()[2] <= 105){ // case 2: keep increasing x-position until 90 degree turn
 					odoData.setX(countx*size);
+					odoData.setTheta(90);
 					countx++;
 				}// robot is vertically in line with origin
 				else if(odoData.getXYT()[2] >= 165 && odoData.getXYT()[2] <= 193){ // case 3: keep decreasing y-position until 90 degree turn
 					county--;
 					odoData.setY(county*size);
+					odoData.setTheta(180);
 					bufferY=odoData.getXYT()[1];
 				}	
 				else if(odoData.getXYT()[2] >= 260 && odoData.getXYT()[2] <= 284){ // case 4: keep decreasing x-position until 90 degree turn
 					countx--;
 					odoData.setX(countx*size);
+					odoData.setTheta(270);
 					
 				}	 
 			}
