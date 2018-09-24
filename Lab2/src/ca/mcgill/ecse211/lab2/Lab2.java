@@ -1,14 +1,25 @@
 // Lab2.java
 package ca.mcgill.ecse211.lab2;
 
+
+
 import ca.mcgill.ecse211.odometer.*;
 import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.port.Port;
+import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.sensor.SensorModes;
+import lejos.robotics.SampleProvider;
 
 public class Lab2 {
 
+	private static final Port portColor=  LocalEV3.get().getPort("S2");
+	private static SensorModes myColor = new EV3ColorSensor(portColor);
+	public static SampleProvider myColorSample= myColor.getMode("Red"); 
+	private static float[] sampleColor =  new float[myColor.sampleSize()];
+	
   // Motor Objects, and Robot related parameters
   private static final EV3LargeRegulatedMotor leftMotor =
       new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
@@ -16,7 +27,7 @@ public class Lab2 {
       new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
   private static final TextLCD lcd = LocalEV3.get().getTextLCD();
   public static final double WHEEL_RAD = 2.2;
-  public static final double TRACK = 13.8;
+  public static final double TRACK = 13.0;
 
   public static void main(String[] args) throws OdometerExceptions {
 
