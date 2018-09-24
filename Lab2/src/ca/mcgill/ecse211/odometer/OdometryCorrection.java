@@ -1,5 +1,5 @@
 /*
- * OdometryCorrection.java
+ * This class corrects the Y and X position of the Odometry class.
  */
 package ca.mcgill.ecse211.odometer;
 
@@ -15,11 +15,10 @@ public class OdometryCorrection implements Runnable {
 	
 	private float color[];
 	 private static float csData;
-	private double countx=0;
+	private double countx=0; 
 	private double county=0;
 	private static final double size = 30.48;
-	private int lines;
-	private double bufferY;
+	private int lines; //number of lines the robot crossed.
 	private int offset; //sensor is on the back of robot so this is the distance between sensor and front wheels.
 
 
@@ -30,11 +29,7 @@ public class OdometryCorrection implements Runnable {
 	 * @throws OdometerExceptions
 	 */
 	public OdometryCorrection() throws OdometerExceptions {
-		// There are 4 steps involved:
-		// 1. Create a port object attached to a physical port (done already above)
-		// 2. Create a sensor instance and attach to port
-		// 3. Create a sample provider instance for the above and initialize operating mode
-		// 4. Create a buffer for the sensor data
+		
 
 		this.odoData = Odometer.getOdometer();
 		
@@ -43,8 +38,7 @@ public class OdometryCorrection implements Runnable {
 		    this.csData = color[0];
 		    countx = 0.0;
 		    county = 0.0;
-		    bufferY=0.0;
-		    offset = 13; //distance between front wheels and sensor
+		    offset = 12; //distance between front wheels and sensor
 		    
 		    
 	
@@ -73,7 +67,7 @@ public class OdometryCorrection implements Runnable {
 				String print = "Lines Passed: " + lines;
 				LCD.drawString(print, 0, 4);
 				
-				//beeping
+				//beeping everytime it crosses a black line
 				Sound.beep();
 				
 				

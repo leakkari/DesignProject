@@ -14,7 +14,8 @@ import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.SampleProvider;
 
 public class Lab2 {
-
+	
+	//sensors
 	private static final Port portColor=  LocalEV3.get().getPort("S2");
 	private static SensorModes myColor = new EV3ColorSensor(portColor);
 	public static SampleProvider myColorSample= myColor.getMode("Red"); 
