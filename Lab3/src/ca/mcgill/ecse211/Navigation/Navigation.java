@@ -1,5 +1,8 @@
 package ca.mcgill.ecse211.Navigation;
 import lejos.hardware.sensor.*;
+/**
+ * This class implements the navigation for the robot
+ */
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
@@ -9,24 +12,35 @@ import ca.mcgill.ecse211.odometer.*;
 import lejos.hardware.Button;
 
 public class Navigation implements Runnable {
-
+	
+	//motors
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
+	
+	//maps array
+	private double[][]  wayPoints = new double[][]{
+		{0*30.48,2*30.48}, 
+		  {1*30.48,1*30.48},
+		  {2*30.48,2*30.48},
+		  {2*30.48,1*30.48},
+		  {1*30.48,0*30.48}};
+	
+	//variables
+	double dx, dy, dt;
+	double travelDistance;
+		  
 	private final double TRACK;
 	private final double WHEEL_RAD;
+	
+	//Robot speed
 	public static final int FORWARD_SPEED = 250;
 	private static final int ROTATE_SPEED = 150;
-	double currentT, currentY, currentX;
-	double dx, dy, dt;
-	double distanceToTravel;
+	
+	
 	private Odometer odometer;
 	private OdometerData odoData;
-	private double[][]  wayPoints = new double[][]{{0*30.48,2*30.48}, // change values for different maps
-												  {1*30.48,1*30.48},
-												  {2*30.48,2*30.48},
-												  {2*30.48,1*30.48},
-												  {1*30.48,0*30.48}};
-												 //array list for points
+	
+	//Constructor
 	public Navigation(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
 		      final double TRACK, final double WHEEL_RAD) throws OdometerExceptions {
 		this.odometer = Odometer.getOdometer();
@@ -39,7 +53,7 @@ public class Navigation implements Runnable {
 
 	}
 
-	// run method (required for Thread)
+	//Method for thread
 	public void run() {
 
 		// wait 5 seconds
@@ -50,8 +64,6 @@ public class Navigation implements Runnable {
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
-			// there is nothing to be done here because it is not expected that
-			// the odometer will be interrupted by another thread
 		}
 		// implemented this for loop so that navigation will work for any number of points
 		for (int i = 0; i < wayPoints.length; i++) { 
@@ -60,13 +72,16 @@ public class Navigation implements Runnable {
 	}
 
 	void travelTo(double x, double y) {
-		currentX = odometer.getXYT()[0];//get the current position of the robot
-		currentY = odometer.getXYT()[1];
-		currentT = odometer.getXYT()[2];
+		 //dx
+		dx = x- odometer.getXYT()[0];
 		
-		dx = x- currentX;
-		dy = y - currentY;
-		distanceToTravel = Math.sqrt(dx*dx+dy*dy);
+		//dy
+		dy = y - odometer.getXYT()[1];;
+		
+		//Applying Pythagore to get the distance the robot has to travel
+		travelDistance = Math.sqrt(dx*dx+dy*dy);
+		
+		
 		if(dy>=0) {
 			dt=Math.atan(dx/dy);
 		}
@@ -75,22 +90,27 @@ public class Navigation implements Runnable {
 		}
 		else {
 			dt=Math.atan(dx/dy)-Math.PI;
-		}//Mathematical convention
+		}
 		
-		// initial angle is 0||2pi, same direction as y-axis, going clockwise
-		double differenceInTheta = (dt*180/Math.PI-currentT); // robot has to turn "differenceInTheta",
-		//turn the robot to the desired direction
-		turnTo(differenceInTheta); 
+		// dtheta = how much the robot should turn
+		double dTheta = (dt*180/Math.PI-odometer.getXYT()[2]); 
 		
-		// drive forward required distance
+		//turn minimal angle
+		turnTo(dTheta); 
+		
+		// drive robot forward
 	    leftMotor.setSpeed(FORWARD_SPEED);
 	    rightMotor.setSpeed(FORWARD_SPEED);
-	    leftMotor.rotate(convertDistance(WHEEL_RAD, distanceToTravel), true);
-	    rightMotor.rotate(convertDistance(WHEEL_RAD, distanceToTravel), false);
+	    leftMotor.rotate(convertDistance(WHEEL_RAD, travelDistance), true);
+	    rightMotor.rotate(convertDistance(WHEEL_RAD, travelDistance), false);
 	}
- 
+	
+	/**
+	 * This Method gets the minimal angle
+	 * @param theta
+	 */
 	void turnTo(double theta) {
-		if(theta>180) {//angel convention, turn in correct minimal angle
+		if(theta>180) {
 			theta=360-theta;
 			leftMotor.setSpeed(ROTATE_SPEED);
 		    rightMotor.setSpeed(ROTATE_SPEED);
@@ -112,7 +132,10 @@ public class Navigation implements Runnable {
 		}
 	}
 	
-	    
+	/**
+	 * This method checks if the robot is navigating
+	 * @return
+	 */    
 	boolean isNavigating() {
 	 if((leftMotor.isMoving() && rightMotor.isMoving()))
 		 return true;
