@@ -19,11 +19,10 @@ public class Navigation implements Runnable {
 	
 	//maps array
 	private double[][]  wayPoints = new double[][]{
-		{0*30.48,2*30.48}, 
-		  {1*30.48,1*30.48},
-		  {2*30.48,2*30.48},
 		  {2*30.48,1*30.48},
-		  {1*30.48,0*30.48}};
+		  {1*30.48,1*30.48},
+		  {1*30.48,2*30.48},
+		  {2*30.48,0*30.48}};
 	
 	//variables
 	double dx, dy, dt;
