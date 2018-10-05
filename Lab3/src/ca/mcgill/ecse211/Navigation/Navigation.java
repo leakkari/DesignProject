@@ -143,23 +143,9 @@ public class Navigation implements Runnable {
 
 	}
 	
-	/**
-	 * This method converts the distance
-	 * @param radius
-	 * @param distance
-	 * @return
-	 */
 	 private static int convertDistance(double radius, double distance) {
 		    return (int) ((180.0 * distance) / (Math.PI * radius));
 		  }
-	 
-	 /**
-		 * This method converts the angle from  radian to degrees
-		 * @param radius
-		 * @param width
-		 * @param angle
-		 * @return
-		 */
 	 private static int convertAngle(double radius, double width, double angle) {
 		    return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
