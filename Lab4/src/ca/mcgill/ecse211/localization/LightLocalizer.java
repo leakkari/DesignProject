@@ -6,6 +6,11 @@ import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
+/**
+ * 
+ * @author Babettesmith
+ *
+ */
 public class LightLocalizer {
   
   private Odometer odometer;
@@ -27,7 +32,13 @@ public class LightLocalizer {
     
     
     
-    //Constructor for LightLocalizer
+    /**
+     * Constructor for light localizer
+     * @param odo
+     * @param colorSensor
+     * @param colorData
+     * @param navi
+     */
     public LightLocalizer(Odometer odo, SampleProvider colorSensor, float[] colorData, Navigation navi) {
         this.odometer = odo;
         this.colorSensor = colorSensor;
@@ -43,6 +54,7 @@ public class LightLocalizer {
         odometerAngles = new double[4];
         angleIndex = 0;
     }
+    
     /**
      * Gets robot to do localization using light sensor 
      */
@@ -63,8 +75,7 @@ public class LightLocalizer {
               e.printStackTrace();
           }
       }
-      
-     
+ 
       leftMotor.stop(true);
       rightMotor.stop(true);
       
@@ -78,7 +89,7 @@ public class LightLocalizer {
       leftMotor.rotate(convertAngle(localization.WHEEL_RAD, localization.TRACK, 90.0), true);
       rightMotor.rotate(-convertAngle(localization.WHEEL_RAD, localization.TRACK, 90.0), false);
       
-      //Robot now searches for black line on x-axis
+      //Robot now rotates 90 degrees and searches for black line on x-axis
       leftMotor.setSpeed(ROT_SPEED);
       rightMotor.setSpeed(ROT_SPEED);
       leftMotor.forward();
@@ -126,10 +137,7 @@ public class LightLocalizer {
       //4 lines have been sensed so the robot stops
       leftMotor.stop(true);
       rightMotor.stop(false);
-      
-      
-      
-  
+   
       //0th element = first y line
       //1st element = first x line
       //2nd element = second y line
@@ -140,49 +148,42 @@ public class LightLocalizer {
       double deltaX = angles[3] - angles[1];
       
       //Computes (0,0) point and degree needed to travel at
-      double xValue = lightSensorDistance*Math.cos(Math.PI*deltaX/(360));
-      double yValue = lightSensorDistance*Math.cos(Math.PI*deltaY/(360));
-      double thetaYMinus = angles[0] ;
+      double xZero = lightSensorDistance*Math.cos(Math.PI*deltaX/(360));
+      double yZero = lightSensorDistance*Math.cos(Math.PI*deltaY/(360));
       
-      //double deltaTheta = +180 - deltaY/2 - thetaYMinus;
-  
-     //Turns to point at (0,0) point 
-      //navigator.turnTo(90, true); 
-      
-      //leftMotor.stop(true);
-      //rightMotor.stop(true);
-      
-      
-     // leftMotor.rotate(convertAngle(localization.WHEEL_RAD, localization.TRACK, -35.0), true);
-      //rightMotor.rotate(-convertAngle(localization.WHEEL_RAD, localization.TRACK, -35.0), false);
-      
-      //Updates position of robot through the odometer
-     //odometer.setPosition(new double [] {-xValue, -yValue, 0}, new boolean [] {true, true, true});
-      
-      //Robot travels to (0,0) coordinate and turns to y-axis
-      navigator.travelTo(xValue, yValue);
+      //Robot travels to calculated coordinates and turns to y-axis
+      navigator.travelTo(xZero, yZero);
       
       leftMotor.rotate(convertAngle(localization.WHEEL_RAD, localization.TRACK, -45), true);
       rightMotor.rotate(-convertAngle(localization.WHEEL_RAD, localization.TRACK, -45), false);
       
-      //odometer.setPosition(new double [] {0, 0, 0}, new boolean [] {true, true, true});
-      //odometer.setPosition(new double [] {/*-xValue, -yValue*/180,180, 0}, new boolean [] {true, true, true});
-      //navigator.turnTo(70 + 180 , true);
-      
-       
   }
-    
-    
-    
+      
+    /**
+     * Converts inputted angle 
+     * @param radius
+     * @param width
+     * @param angle
+     * @return
+     */
     private static int convertAngle(double radius, double width, double angle) {
         return convertDistance(radius, Math.PI * width * angle / 360.0);
     }
     
+    /**
+     * Converts inputted distance 
+     * @param radius
+     * @param distance
+     * @return
+     */
     private static int convertDistance(double radius, double distance) {
         return (int) ((180.0 * distance) / (Math.PI * radius));
     }
     
-    
+    /**
+     * 
+     * @return
+     */
     private float getColorData() {
         colorSensor.fetchSample(colorDataArray, 0);
         float colorBrightnessLevel = (colorDataArray[0] + colorDataArray[1] + colorDataArray[2]);

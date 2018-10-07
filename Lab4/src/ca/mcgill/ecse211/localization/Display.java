@@ -6,38 +6,45 @@ import java.text.DecimalFormat;
 import lejos.hardware.lcd.TextLCD;
 
 /**
- * This class is used to display the content of the odometer variables (x, y, Theta)
+ * 
+ * @author Babettesmith
+ *
  */
+
 public class Display implements Runnable {
 
-  private Odometer odo;
+  private Odometer odometer;
   private TextLCD lcd;
   private double[] position;
   private final long DISPLAY_PERIOD = 25;
   private long timeout = Long.MAX_VALUE;
+  
+  
   /**
-   * This is the class constructor
-   * 
-   * @param odoData
-   * @throws OdometerExceptions 
+   * Constructor for Display Object with one parameter 
+   * @param lcd
+   * @throws OdometerExceptions
    */
   public Display(TextLCD lcd) throws OdometerExceptions {
-    odo = Odometer.getOdometer();
+    odometer = Odometer.getOdometer();
     this.lcd = lcd;
   }
 
-  /**
-   * This is the overloaded class constructor
-   * 
-   * @param odoData
-   * @throws OdometerExceptions 
-   */
+ /**
+  * Constructor for Display Object with two parameters
+  * @param lcd
+  * @param timeout
+  * @throws OdometerExceptions
+  */
   public Display(TextLCD lcd, long timeout) throws OdometerExceptions {
-    odo = Odometer.getOdometer();
+    odometer = Odometer.getOdometer();
     this.timeout = timeout;
     this.lcd = lcd;
   }
 
+  /**
+   * run method 
+   */
   public void run() {
     
     lcd.clear();
@@ -49,7 +56,7 @@ public class Display implements Runnable {
       updateStart = System.currentTimeMillis();
 
       // Retrieve x, y and Theta information
-      position = odo.getXYT();
+      position = odometer.getXYT();
       
       // Print x,y, and theta information
       DecimalFormat numberFormat = new DecimalFormat("######0.00");

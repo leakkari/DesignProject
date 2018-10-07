@@ -9,56 +9,74 @@ import lejos.robotics.SampleProvider;
 import ca.mcgill.ecse211.localization.*;
 import lejos.hardware.Button;
 
+/**
+ * 
+ * @author Babettesmith
+ *
+ */
 public class localization {
 
-	// Motor Objects, and Robot related parameters
-
-  private static final Port colorPort = LocalEV3.get().getPort("S2");  
-	private static final EV3LargeRegulatedMotor leftMotor =
+  //Vaiables for motors and sensors 
+    private static final Port colorPort = LocalEV3.get().getPort("S2");  
+  
+    private static final EV3LargeRegulatedMotor leftMotor =
 			new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
 
-	private static final EV3LargeRegulatedMotor rightMotor =
+    private static final EV3LargeRegulatedMotor rightMotor =
 			new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
 
-	private static final TextLCD lcd = LocalEV3.get().getTextLCD();
+    private static final TextLCD lcd = LocalEV3.get().getTextLCD();
 
-	public static final double WHEEL_RAD = 2.2;
-	public static final double TRACK = 12.9;
-	public static boolean edge=false;
+    public static final double WHEEL_RAD = 2.2;
+    public static final double TRACK = 12.9;
+    public static boolean edge=false;
 	
-	
-
-
+	/**
+	 * Main method, allows user to inteact with brick 
+	 * @param args
+	 * @throws OdometerExceptions
+	 */
 	public static void main(String[] args) throws OdometerExceptions {
 	  
-	  SensorModes colorSensor = new EV3ColorSensor(colorPort);
-      SampleProvider colorValue = colorSensor.getMode("RGB");// .getMode("Red");          // colorValue provides samples from this instance
-      float[] colorData = new float[colorValue.sampleSize()];
+	    //Sets up colour sensor and array holding data
+	    SensorModes colorSensor = new EV3ColorSensor(colorPort);
+	    SampleProvider colorValue = colorSensor.getMode("RGB");
+        float[] colorData = new float[colorValue.sampleSize()];
       
-     
-      
+        //Creates odometer object
 		Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor, TRACK, WHEEL_RAD); 
+		
+		//Creates navigation object 
 		Navigation navi = new Navigation(odometer);
+		
+		//Creates ultrasonic localizer object
 		UltrasonicLocalizer us_localizer = new UltrasonicLocalizer(leftMotor,rightMotor,TRACK,WHEEL_RAD);
+		
+		//Creates light localizer object
 		LightLocalizer light_localizer= new LightLocalizer(odometer, colorValue, colorData, navi);
+		
 		int buttonChoice;
-		// Odometer related objects
-		//ObstacleAvoidance obstacleAvoidance = new ObstacleAvoidance(); 
+		
+		//Creates Display object 
 		Display odometryDisplay = new Display(lcd);
 		do {
-			// clear the display
+			// clear the lcd display
 			lcd.clear();
 
-			// ask the user whether the motors should drive in a square or float
+			//Prompts the user to select falling edge or rising edge 
 			lcd.drawString("< Left |  Right >", 0, 0);
 			lcd.drawString("       |         ", 0, 1);
 			lcd.drawString("Rising |  Falling", 0, 2);
 			lcd.drawString("edge   |  edge   ", 0, 3);
 			lcd.drawString("       | 		 ", 0, 4);
 
+			//Waits for the user to make a selection
 			buttonChoice = Button.waitForAnyPress();
-		} while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT);
+		} 
+		
+		while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT);
 
+		//Robot performs rising edge localization, waits for user to press a button then performs light localization
 		if (buttonChoice == Button.ID_LEFT) {
 			Thread odoThread = new Thread(odometer);
 			odoThread.start();
@@ -68,9 +86,9 @@ public class localization {
 			buttonChoice = Button.waitForAnyPress();
 			light_localizer.doLocalization();
 			
-		} else {
-			edge=true;
-			Thread odoThread = new Thread(odometer);
+		} else { //Robot performs falling edge localization, waits for user to press a button then performs light localization
+		    edge = true;
+		    Thread odoThread = new Thread(odometer);
 			odoThread.start();
 			Thread odoDisplayThread = new Thread(odometryDisplay);
 			odoDisplayThread.start();
@@ -78,8 +96,6 @@ public class localization {
 			buttonChoice = Button.waitForAnyPress();
 			light_localizer.doLocalization();
 		}
-
-		
 		
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);

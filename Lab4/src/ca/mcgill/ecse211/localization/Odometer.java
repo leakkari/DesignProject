@@ -15,7 +15,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 public class Odometer extends OdometerData implements Runnable {
 
   private OdometerData odoData;
-  private static Odometer odo = null; // Returned as singleton
+  private static Odometer odo = null; 
 
   // Motors and related variables
   private int leftMotorTachoCount;
@@ -25,12 +25,20 @@ public class Odometer extends OdometerData implements Runnable {
 
   private final double TRACK;
   private final double WHEEL_RAD;
-  private int lastTachoL, lastTachoR;
-  private double X=0, Y=0, Theta = 0;
-  private double distL,distR, deltaD, deltaT, dX, dY;
+  private int lastTachoL;
+  private int lastTachoR;
+  private double X=0;
+  private double Y=0;
+  private double Theta = 0;
+  private double distL;
+  private double distR;
+  private double deltaD; 
+  private double deltaT;
+  private double dX; 
+  private double dY;
 
-
-  private static final long ODOMETER_PERIOD = 25; // odometer update period in ms
+  //Regularity at which odometer updates 
+  private static final long ODOMETER_PERIOD = 25; 
 
   /**
    * This is the default constructor of this class. It initiates all motors and variables once.It
@@ -103,22 +111,27 @@ public class Odometer extends OdometerData implements Runnable {
     	updateStart = System.currentTimeMillis();
     		leftMotorTachoCount = leftMotor.getTachoCount();
     		rightMotorTachoCount = rightMotor.getTachoCount();
-    		distL=3.1415926*WHEEL_RAD*(leftMotorTachoCount-lastTachoL)/180; // compute the distance travelled by the
-    		distR=3.1415926*WHEEL_RAD*(rightMotorTachoCount-lastTachoR)/180; // the left and right wheel in the current update period
-    		lastTachoL=leftMotorTachoCount; //update left
-    		lastTachoR=rightMotorTachoCount;// and right motor tachocount
+    		
+    		//computes distance traveled by the left and right wheels periods
+    		distL=3.1415926*WHEEL_RAD*(leftMotorTachoCount-lastTachoL)/180;  
+    		distR=3.1415926*WHEEL_RAD*(rightMotorTachoCount-lastTachoR)/180; 
+    		
+    		//Updates left and right wheel tacho counts 
+    		lastTachoL=leftMotorTachoCount; 
+    		lastTachoR=rightMotorTachoCount;
+    		
+    		//Computes changes in distances and theta and updates them 
     		deltaD=0.5*(distL+distR);
-    		deltaT=(distL-distR)/TRACK; // direction change in the current update period (in radians)
-    		Theta+=deltaT; // update theta
-    		dX=deltaD*Math.sin(Theta); //update x 
-    		dY=deltaD*Math.cos(Theta);// and y coordinates
+    		deltaT=(distL-distR)/TRACK; 
+    		Theta+=deltaT; 
+    		dX=deltaD*Math.sin(Theta); 
+    		dY=deltaD*Math.cos(Theta);
     		X=X+dX;
-    		Y=Y+dY;				
-			
+    		Y=Y+dY;		
+    		
+			//Updates the odometer with the new information 
     	  	odo.update(dX, dY, deltaT*180/Math.PI);
-      // TODO Calculate new robot position based on tachometer counts
       
-      // TODO Update odometer values with new calculated values
 
 
       // this ensures that the odometer only runs once every period
@@ -133,46 +146,73 @@ public class Odometer extends OdometerData implements Runnable {
     }
   }
   
+  /**
+   * Getter method for motors 
+   * @return
+   */
   public EV3LargeRegulatedMotor [] getMotors() {
     return new EV3LargeRegulatedMotor[] {this.leftMotor, this.rightMotor};
-}
-public EV3LargeRegulatedMotor getLeftMotor() {
-    return this.leftMotor;
-}
-public EV3LargeRegulatedMotor getRightMotor() {
-    return this.rightMotor;
-}
-
-public double getAng() {
-  synchronized (this) {
-      return Theta;
   }
-}
+  
+  /**
+   * Getter method for left motor 
+   * @return
+   */
+  public EV3LargeRegulatedMotor getLeftMotor() {
+    return this.leftMotor;
+  }
+  
+  /**
+   * Getter mother for right motor 
+   * @return
+   */
+  public EV3LargeRegulatedMotor getRightMotor() {
+    return this.rightMotor;
+  }
 
-public void setPosition(double[] position, boolean[] update) {
-  synchronized (this) {
+  /**
+   * Getter method for angle 
+   * @return
+   */
+  public double getAng() {
+    synchronized (this) {
+      return Theta;
+    }
+  }   
+
+  /**
+   * Setter method for robot position 
+   * @param position
+   * @param update
+   */
+  public void setPosition(double[] position, boolean[] update) {
+    synchronized (this) {
       if (update[0])
           X = position[0];
       if (update[1])
           Y = position[1];
       if (update[2])
           Theta = position[2];
+    }
   }
-}
 
-
-public double getX() {
-  synchronized (this) {
+/**
+ * Getter method for x coordinate
+ * @return
+ */
+  public double getX() {
+    synchronized (this) {
       return X;
+    }
   }
-}
 
-// return Y value
-public double getY() {
-  synchronized (this) {
+/**
+ * Getter method for y coordinate 
+ * @return
+ */
+  public double getY() {
+    synchronized (this) {
       return Y;
-  }
-}
-
-// return theta value
+    }
+  }   
 }
