@@ -12,8 +12,8 @@ public class Navigation implements Runnable {
 
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
-	private final double TRACK;
-	private final double WHEEL_RAD;
+	public static final double WHEEL_RAD = 2.2;
+    public static final double TRACK = 12.9;
 	public static final int FORWARD_SPEED = 250;
 	private static final int ROTATE_SPEED = 150;
 	double currentT, currentY, currentX;
@@ -21,13 +21,16 @@ public class Navigation implements Runnable {
 	double distanceToTravel;
 	private Odometer odometer;
 	private OdometerData odoData;
+	final static double DEG_ERR = 0.6, CM_ERR = 0.4;
+	
+	final static int FAST = 80, SLOW = 50, ACCELERATION = 600;
 	private double[][]  wayPoints = new double[][]{{0*30.48,2*30.48}, // change values for different maps
 												  {1*30.48,1*30.48},
 												  {2*30.48,2*30.48},
 												  {2*30.48,1*30.48},
 												  {1*30.48,0*30.48}};
 												 //array list for points
-	public Navigation(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
+	/*public Navigation(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
 		      final double TRACK, final double WHEEL_RAD) throws OdometerExceptions {
 		this.odometer = Odometer.getOdometer();
 	    this.leftMotor = leftMotor;
@@ -37,7 +40,19 @@ public class Navigation implements Runnable {
 	    this.TRACK = TRACK;
 	    this.WHEEL_RAD = WHEEL_RAD;
 
-	}
+	}*/
+	
+	 public Navigation(Odometer odo) {
+       this.odometer = odo;
+
+       EV3LargeRegulatedMotor[] motors = this.odometer.getMotors();
+       this.leftMotor = motors[0];
+       this.rightMotor = motors[1];
+
+       // set acceleration
+       this.leftMotor.setAcceleration(ACCELERATION);
+       this.rightMotor.setAcceleration(ACCELERATION);
+   }
 
 	// run method (required for Thread)
 	public void run() {
@@ -58,8 +73,10 @@ public class Navigation implements Runnable {
 			travelTo(wayPoints[i][0], wayPoints[i][1]);
 		}
 	}
+	
 
 	void travelTo(double x, double y) {
+	 
 		currentX = odometer.getXYT()[0];//get the current position of the robot
 		currentY = odometer.getXYT()[1];
 		currentT = odometer.getXYT()[2];
@@ -83,12 +100,35 @@ public class Navigation implements Runnable {
 		turnTo(differenceInTheta); 
 		
 		// drive forward required distance
-	    leftMotor.setSpeed(FORWARD_SPEED);
-	    rightMotor.setSpeed(FORWARD_SPEED);
+	    leftMotor.setSpeed(FORWARD_SPEED-150);
+	    rightMotor.setSpeed(FORWARD_SPEED-150);
 	    leftMotor.rotate(convertDistance(WHEEL_RAD, distanceToTravel), true);
 	    rightMotor.rotate(convertDistance(WHEEL_RAD, distanceToTravel), false);
 	}
  
+	 public void turnTo(double angle, boolean stop) {
+
+       double error = angle - this.odometer.getAng();
+
+       while (Math.abs(error) > DEG_ERR) {
+
+           error = angle - this.odometer.getAng();
+
+           if (error < -180.0) {
+               this.setSpeeds(-SLOW, SLOW);
+           } else if (error < 0.0) {
+               this.setSpeeds(SLOW, -SLOW);
+           } else if (error > 180.0) {
+               this.setSpeeds(SLOW, -SLOW);
+           } else {
+               this.setSpeeds(-SLOW, SLOW);
+           }
+       }
+
+       if (stop) {
+           this.setSpeeds(0, 0);
+       }
+   }
 	void turnTo(double theta) {
 		if(theta>180) {//angel convention, turn in correct minimal angle
 			theta=360-theta;
@@ -128,27 +168,85 @@ public class Navigation implements Runnable {
 		    return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
 
-		public double getX() {
+	public double getX() {
 			return odometer.getXYT()[0];
 		}
 
-		public double getY() {
+	public double getY() {
 			return odometer.getXYT()[1];
 		}
 
-		public double getTheta() {
+	public double getTheta() {
 			return odometer.getXYT()[2];
 		}
 
-		public void setTheta(double theta) {
+	public void setTheta(double theta) {
 			odometer.setTheta(theta);
 		}
 		
-		public void setX(double x) {
+	public void setX(double x) {
 			odometer.setX(x);
 		}
 		
-		public void setY(double y) {
+	public void setY(double y) {
 			odometer.setY(y);
 		}
+		
+	/*public void turnTo(double angle, boolean stop) {
+
+	        double error = angle - this.odometer.getAng();
+
+	        while (Math.abs(error) > DEG_ERR) {
+
+	            error = angle - this.odometer.getAng();
+
+	            if (error < -180.0) {
+	                this.setSpeeds(-SLOW, SLOW);
+	            } else if (error < 0.0) {
+	                this.setSpeeds(SLOW, -SLOW);
+	            } else if (error > 180.0) {
+	                this.setSpeeds(SLOW, -SLOW);
+	            } else {
+	                this.setSpeeds(-SLOW, SLOW);
+	            }
+	        }
+
+	        if (stop) {
+	            this.setSpeeds(0, 0);
+	        }
+	    }*/
+		
+		public void setSpeeds(float lSpd, float rSpd) {
+	        this.leftMotor.setSpeed(lSpd);
+	        this.rightMotor.setSpeed(rSpd);
+	        if (lSpd < 0)
+	            this.leftMotor.backward();
+	        else
+	            this.leftMotor.forward();
+	        if (rSpd < 0)
+	            this.rightMotor.backward();
+	        else
+	            this.rightMotor.forward();
+	    }
+
+	    public void setSpeeds(int lSpd, int rSpd) {
+	        this.leftMotor.setSpeed(lSpd);
+	        this.rightMotor.setSpeed(rSpd);
+	        if (lSpd < 0)
+	            this.leftMotor.backward();
+	        else
+	            this.leftMotor.forward();
+	        if (rSpd < 0)
+	            this.rightMotor.backward();
+	        else
+	            this.rightMotor.forward();
+	    }
+
+	    public void stopMotors() {
+	      leftMotor.setSpeed(0);
+	      rightMotor.setSpeed(0);
+	    }
+	    
+	    
+	    
 }

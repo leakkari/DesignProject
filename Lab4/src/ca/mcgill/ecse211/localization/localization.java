@@ -6,14 +6,14 @@ import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.robotics.SampleProvider;
+import ca.mcgill.ecse211.localization.*;
 import lejos.hardware.Button;
 
 public class localization {
 
 	// Motor Objects, and Robot related parameters
 
-	//private static final EV3ColorSensor colorSensor =
-	//new EV3ColorSensor(LocalEV3.get().getPort("S4"));
+  private static final Port colorPort = LocalEV3.get().getPort("S2");  
 	private static final EV3LargeRegulatedMotor leftMotor =
 			new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
 
@@ -23,14 +23,24 @@ public class localization {
 	private static final TextLCD lcd = LocalEV3.get().getTextLCD();
 
 	public static final double WHEEL_RAD = 2.2;
-	public static final double TRACK = 16.63;
+	public static final double TRACK = 12.9;
 	public static boolean edge=false;
+	
+	
 
 
 	public static void main(String[] args) throws OdometerExceptions {
+	  
+	  SensorModes colorSensor = new EV3ColorSensor(colorPort);
+      SampleProvider colorValue = colorSensor.getMode("RGB");// .getMode("Red");          // colorValue provides samples from this instance
+      float[] colorData = new float[colorValue.sampleSize()];
+      
+     
+      
 		Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor, TRACK, WHEEL_RAD); 
+		Navigation navi = new Navigation(odometer);
 		UltrasonicLocalizer us_localizer = new UltrasonicLocalizer(leftMotor,rightMotor,TRACK,WHEEL_RAD);
-		LightLocalizer light_localizer= new LightLocalizer(leftMotor,rightMotor,TRACK,WHEEL_RAD);
+		LightLocalizer light_localizer= new LightLocalizer(odometer, colorValue, colorData, navi);
 		int buttonChoice;
 		// Odometer related objects
 		//ObstacleAvoidance obstacleAvoidance = new ObstacleAvoidance(); 
@@ -56,7 +66,7 @@ public class localization {
 			odoDisplayThread.start();
 			us_localizer.run();
 			buttonChoice = Button.waitForAnyPress();
-			light_localizer.run();
+			light_localizer.doLocalization();
 			
 		} else {
 			edge=true;
@@ -66,9 +76,11 @@ public class localization {
 			odoDisplayThread.start();
 			us_localizer.run();
 			buttonChoice = Button.waitForAnyPress();
-			light_localizer.run();
+			light_localizer.doLocalization();
 		}
 
+		
+		
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}

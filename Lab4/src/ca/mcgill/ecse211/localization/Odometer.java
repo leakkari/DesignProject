@@ -132,4 +132,47 @@ public class Odometer extends OdometerData implements Runnable {
       }
     }
   }
+  
+  public EV3LargeRegulatedMotor [] getMotors() {
+    return new EV3LargeRegulatedMotor[] {this.leftMotor, this.rightMotor};
+}
+public EV3LargeRegulatedMotor getLeftMotor() {
+    return this.leftMotor;
+}
+public EV3LargeRegulatedMotor getRightMotor() {
+    return this.rightMotor;
+}
+
+public double getAng() {
+  synchronized (this) {
+      return Theta;
+  }
+}
+
+public void setPosition(double[] position, boolean[] update) {
+  synchronized (this) {
+      if (update[0])
+          X = position[0];
+      if (update[1])
+          Y = position[1];
+      if (update[2])
+          Theta = position[2];
+  }
+}
+
+
+public double getX() {
+  synchronized (this) {
+      return X;
+  }
+}
+
+// return Y value
+public double getY() {
+  synchronized (this) {
+      return Y;
+  }
+}
+
+// return theta value
 }
