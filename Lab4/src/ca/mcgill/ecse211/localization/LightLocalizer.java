@@ -154,8 +154,8 @@ public class LightLocalizer {
       //Robot travels to calculated coordinates and turns to y-axis
       navigator.travelTo(xZero, yZero);
       
-      leftMotor.rotate(convertAngle(localization.WHEEL_RAD, localization.TRACK, -45), true);
-      rightMotor.rotate(-convertAngle(localization.WHEEL_RAD, localization.TRACK, -45), false);
+      leftMotor.rotate(convertAngle(localization.WHEEL_RAD, localization.TRACK, -50), true);
+      rightMotor.rotate(-convertAngle(localization.WHEEL_RAD, localization.TRACK, -50), false);
       
   }
       
@@ -181,11 +181,12 @@ public class LightLocalizer {
     }
     
     /**
-     * 
+     * Gets data from light sensor 
      * @return
      */
     private float getColorData() {
         colorSensor.fetchSample(colorDataArray, 0);
+        //The brightness is a combination of the red, green and blue values
         float colorBrightnessLevel = (colorDataArray[0] + colorDataArray[1] + colorDataArray[2]);
         return colorBrightnessLevel;
     }

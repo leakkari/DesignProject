@@ -28,7 +28,7 @@ public class localization {
     private static final TextLCD lcd = LocalEV3.get().getTextLCD();
 
     public static final double WHEEL_RAD = 2.2;
-    public static final double TRACK = 12.9;
+    public static final double TRACK = 13.1;
     public static boolean edge=false;
 	
 	/**
