@@ -1,4 +1,4 @@
-# Design Principle and Methods
+# Design Principles and Methods
 
 ## About the Design Project: 
 
