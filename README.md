@@ -6,7 +6,7 @@
 
 ### The goal of this project is to design and construct a machine that can autonomously navigate a closed course in search of a set of colored rings. Once found, the machine must determine how to grasp and retrieve as many rings as possible, taking into account the value of each ring asdepicted by its color. In order to count, a ring must be returned to the starting corner. 
 
-*------------------------------------------*
+---
 Consider the scenario depicted in the figure above, with two players labeled 1 and 3. The labels indicate the
 corners each machine started in, so Player 1 starts in Corner 1 (Green Zone) and Player 3 in
 Corner 3 (Red Zone). Each of the zones is surrounded by a virtual river (blue regions),
@@ -17,7 +17,7 @@ green zone is defined as Green_LL (10,0) to Green_UR (15,4). Information is tran
 each machine/player using a provided WiFi class. In the Wifi dialog, these coordinates are
 passed as individual components, hence Red_LL (x,y) would be sent as Red_LL_x andRed_LL_y.
 
-
+---
 
 The playing field measures 15’ x 9’, with the origin located in the lower left hand corner, (0,0),
 as shown in Figure 1. At the start of a round, both players are placed in their respective corners
@@ -28,14 +28,16 @@ The key parameters here are RedTeam, GreenTeam, RedCorner and GreenCorner. Each 
 has an assigned team number, so it can determine whether its in the red corner or green corner by
 matching against RedTeam or GreenTeam. Once the team color is identified, the starting corner
 can be located by the RedCorner and GreenCorner parameters respectively. From here two key
-2
-landmarks become available: the location of the tunnel connecting the starting zone to the island,
+2 landmarks become available: the location of the tunnel connecting the starting zone to the island,
 and the location of the corresponding ring set. In the example shown in Figure 1, the red player
 would cross using the tunnel located at TNR_LL (4,7) to TNR_UR (6,8) and navigate to the ring
 set located at TR (8,7). Since a ring set is defined as located at the intersection of two grid lines,
 it is specified as a single coordinate pair. Similarly, the green player would cross using the
 tunnel located at TNG_LL (10,3) to TNG_UR (11,5), and navigate to the ring set located at TL
 (13,7).
+
+---
+
 Pay close attention to how the tunnels are positioned relative to the red and green zones. Notice,
 in this example, that the tunnel connecting the red zone joins at the boundary whereas the tunnel
 connecting the green zone overlaps by one square. This will always be the case when the border
@@ -51,7 +53,7 @@ demo are in), machines must be nimble enough to move with a reasonable speed. In
 your design, you can assume that the nominal time limit is 5 minutes from receipt of parameters
 to completion of task. If this time is changed, it will be adjusted upwards (more time).
 
-*--------------*
+---
 
 ## Final Project Poster:
 
