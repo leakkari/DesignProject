@@ -61,6 +61,9 @@ to completion of task. If this time is changed, it will be adjusted upwards (mor
 
 ---
 
+# About the Labs:
+
+
 ## Lab 1 : Wall Following
 
 ![Lab1](Items/Lab1.png)
