@@ -1,0 +1,145 @@
+Software Flow
+
+-USLocalization:
+ -Call method localizeFallingEdge() in USLocalizer
+
+-LightLocalization
+ -Call method initialLocalize() in LightLocalizer
+ 
+-Navigation to tunnel entrance (to black line before entering tunnel)
+ -Call method travelToTunnel() in Navigation
+ -coordinates depend on tunnel's location
+ 
+-Navigation to tunnel exit (to black line after exiting tunnel)
+ -Call method travelThroughTunnel() in Navigation 
+ -Move in a straight line
+ -Speed will be increased to pass over the level
+ -May use US sensor
+
+-Navigation to TR_LL
+ -Call method travelToRingSet() in Navigation
+ -coordinates depend on ring set location
+
+-LightLocalization at TR_LL
+ -Call method localize() in LightLocalizer
+ -Differs from initialLocalize()
+ -Robot will turn until it is not on a black line
+ -Then it will localize
+
+-------------------
+Thread Ring Search : 
+-Searching for ring set (supposed the ring set is at the center)
+ -Call method searchRingSet(x,y) in RingSearcher
+ -Stop robot when distance detected by US is less than d
+ -Turn 45 left
+ -Move forward by distance x
+ -Turn 45 right
+ -Move forward until distance detected by US is less than d
+
+-Detection of ring color
+ -Call method detectRing() in RingSearcher
+ -Look for orange ring
+
+-Moving around ring set
+ -Call method moveToNextRing() in RingSearcher
+ -Move to next ring
+ -Hardcoded path
+
+-Grab ring if orange
+ -Call method grabRing() in RingSearcher
+ -Move forward by distance d
+ -Ring will fall in the platform
+ -(Grab one ring for the moment)
+---------------------
+
+-Navigation to tunnel exit
+ -Call method travelToTunnel() in Navigation
+
+-Navigation to tunnel entrance
+ -Call method travelThroughTunnel() in Navigation
+ -May use US sensor
+
+-Navigation to startingPoint
+ -Call method travelToStartingPoint() in Navigation
+
+-Unload ring
+ -Call method unloadRing() in RingSearcher
+
+***Additional details***
+-Call method adjustTurn() after every turn
+ -it uses the gyroscope to correct the turns
+ -will be integrated in Navigation and RingSearcher
+
+-OdometerCorrection
+ -will be integrated in Navigation and RingSearcher
+
+-Timer may be added (will see)
+
+Threads:
+1-Odometer
+2-Display
+3-RingSearcher( will be called in method SearchRing() in Navigation)
+
+
+-------------------------------------------
+Starting Corner:
+- 0: Lower-left corner of board  (0,0)
+- 1: Lower-right corner of board (15,0)
+- 2: Upper-right corner of board (15,9)	
+- 3: Upper-left corner of board  (0,9)
+
+USLocalization:(end position should...)
+-Starting point:
+ - 0: point towards positive y-axis
+ - 1: point towards negative x-axis
+ - 2: point towards negative y-axis
+ - 3: point towards positive x-axis
+
+Initial light localization would be at point 
+-Starting point:
+ - 0: (1,1)
+ - 1: (14,1)
+ - 2: (14,8)
+ - 3: (1,8)
+-------------------------------------------
+RED ZONE PATH:
+- Red_LLx (lower-left x) 
+- Red_LLy (lower-left y)
+
+- Red_URx (upper-right x)
+- Red_URy (upper-right y)
+
+-Zone size: (square)
+ -Red_UR_x – Red_LL_x: Min=2, Max=10
+ -Red_UR_y – Red_LL_y: Min=2, Max=10
+
+-Tunnel parameters: 
+(does not overlap in zone)
+(overlaps 2 tiles in water)
+-size : 2 tiles
+-BRR_LLx
+-BRR_LLy
+
+-BRR_URx
+-BRR_URy
+-------------------------------------------
+Green ZONE PATH:
+- Green_LLx (lower-left x)
+- Green_LLy (lower-left y)
+
+- Green_URx (upper-right x)
+- Green_URy (upper-right y)
+
+-Zone size: (rectangle)
+ -Green_UR_x – Green_LL_x: Min=2, Max=10
+ -Green_UR_y – Green_LL_y: Min=2, Max=10
+
+-Tunnel parameter: 
+(overlaps 1 tile in zone)
+(overlaps 1 tile in water)
+-size : 2 tiles
+-BRG_LLx
+-BRG_LLy
+
+-BRG_URx
+-BRG_URy
