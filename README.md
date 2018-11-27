@@ -86,3 +86,12 @@ to completion of task. If this time is changed, it will be adjusted upwards (mor
 
 ![Lab4](Items/Lab4.png)
 
+---
+
+## Lab 5 : Search & Localize
+
+![Lab5-1](Items/Lab5-1.png)
+
+![Lab5-2](Items/Lab5-2.png)
+
+![Lab5-3](Items/Lab5-3.png)
