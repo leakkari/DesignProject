@@ -4,7 +4,7 @@
 
 ![playground](Items/Playground.png)
 
-### The goal of this project is to design and construct a machine that can autonomously navigate a closed course in search of a set of colored rings. Once found, the machine must determine how to grasp and retrieve as many rings as possible, taking into account the value of each ring asdepicted by its color. In order to count, a ring must be returned to the starting corner. 
+ The goal of this project is to design and construct a machine that can autonomously navigate a closed course in search of a set of colored rings. Once found, the machine must determine how to grasp and retrieve as many rings as possible, taking into account the value of each ring asdepicted by its color. In order to count, a ring must be returned to the starting corner. 
 
 
 ---
