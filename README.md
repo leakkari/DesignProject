@@ -59,4 +59,6 @@ to completion of task. If this time is changed, it will be adjusted upwards (mor
 
 ![poster](Poster_Final_Project.png)
 
-## Lab 1
+## Lab 1 : Wall Following
+
+![Lab1](Lab1.png)
