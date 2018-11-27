@@ -57,8 +57,29 @@ to completion of task. If this time is changed, it will be adjusted upwards (mor
 
 ## Final Project Poster:
 
-![poster](Poster_Final_Project.png)
+![poster](Items/Poster_Final_Project.png)
+
+---
 
 ## Lab 1 : Wall Following
 
-![Lab1](Lab1.png)
+![Lab1](Items/Lab1.png)
+
+---
+
+## Lab 2 : Odometry
+
+![Lab2](Items/Lab2.png)
+
+---
+
+## Lab 3 : Navigation & Obstacle Avoidance
+
+![Lab3](Items/Lab3.png)
+
+---
+
+## Lab 4 : Localization
+
+![Lab4](Items/Lab4.png)
+
